@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blood Availability - Blood Life Line</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            text-align: center;
+            padding: 30px 20px;
+            border-radius: 20px 20px 0 0;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header-actions {
+            margin-top: 15px;
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .track-btn {
+            background: rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.8);
+            color: white;
+            padding: 10px 16px;
+            border-radius: 999px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: all 0.25s ease;
+        }
+
+        .track-btn:hover {
+            background: white;
+            color: #c0392b;
+        }
+
+        .content {
+            background: white;
+            padding: 40px;
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .section {
+            margin-bottom: 50px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #e74c3c;
+        }
+
+        .section-header h2 {
+            color: #2c3e50;
+            font-size: 1.8em;
+        }
+
+        .section-header .icon {
+            font-size: 2em;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #7f8c8d;
+            font-size: 1.2em;
+        }
+
+        .error {
+            background: #ffebee;
+            border-left: 4px solid #e74c3c;
+            padding: 20px;
+            margin: 20px 0;
+            color: #c62828;
+            border-radius: 5px;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #7f8c8d;
+            font-style: italic;
+        }
+
+        /* Inventory Table Styles */
+        .table-container {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.9em;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #ecf0f1;
+            color: #2c3e50;
+        }
+
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .blood-count {
+            font-weight: 700;
+            padding: 4px 8px;
+            border-radius: 4px;
+            display: inline-block;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        .blood-count.high {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .blood-count.medium {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .blood-count.low {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .blood-count.zero {
+            background: #e0e0e0;
+            color: #757575;
+        }
+
+        /* Donor Card Styles */
+        .donor-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .donor-card {
+            background: white;
+            border: 2px solid #ecf0f1;
+            border-radius: 10px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .donor-card:hover {
+            border-color: #e74c3c;
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.2);
+            transform: translateY(-3px);
+        }
+
+        .donor-card h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1.3em;
+        }
+
+        .donor-info {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .donor-info-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .donor-info-row strong {
+            color: #7f8c8d;
+            min-width: 80px;
+            font-size: 0.85em;
+        }
+
+        .donor-info-row span {
+            color: #2c3e50;
+            flex: 1;
+        }
+
+        .donor-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .donor-badge.blood {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .donor-badge.organ {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .back-link a {
+            color: #e74c3c;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+        }
+
+        .back-link a:hover {
+            color: #c0392b;
+            text-decoration: underline;
+        }
+
+        /* Request Button */
+        .request-btn {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+
+        .request-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 3px 10px rgba(231, 76, 60, 0.3);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 0;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            animation: slideIn 0.3s;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 15px 15px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 1.5em;
+        }
+
+        .close {
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .close:hover {
+            transform: scale(1.2);
+        }
+
+        .modal-body {
+            padding: 30px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .hospital-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+
+        .hospital-info h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .hospital-info p {
+            color: #7f8c8d;
+            margin: 5px 0;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #2c3e50;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .form-group select,
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        .form-group select:focus,
+        .form-group input:focus {
+            outline: none;
+            border-color: #e74c3c;
+            box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+        }
+
+        .available-units {
+            background: #e3f2fd;
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin-top: 10px;
+            color: #1565c0;
+            font-weight: 600;
+        }
+
+        .modal-footer {
+            padding: 20px 30px;
+            border-top: 1px solid #ecf0f1;
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+        }
+
+        .btn-secondary {
+            background: #ecf0f1;
+            color: #2c3e50;
+        }
+
+        .btn-secondary:hover {
+            background: #bdc3c7;
+        }
+
+        /* Delivery Order Styles */
+        .order-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .order-card {
+            background: white;
+            border: 2px solid #ecf0f1;
+            border-left: 5px solid #e74c3c;
+            border-radius: 10px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .order-card:hover {
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.2);
+            transform: translateY(-3px);
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .order-id {
+            font-weight: bold;
+            color: #e74c3c;
+            font-size: 1.1em;
+        }
+
+        .order-status {
+            background: #fff3cd;
+            color: #856404;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .order-details {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .order-detail-row {
+            display: flex;
+            gap: 8px;
+        }
+
+        .order-detail-row strong {
+            color: #7f8c8d;
+            min-width: 120px;
+            font-size: 0.9em;
+        }
+
+        .order-detail-row span {
+            color: #2c3e50;
+            flex: 1;
+        }
+
+        .blood-type-badge {
+            background: #e74c3c;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+
+            .donor-grid {
+                grid-template-columns: 1fr;
+            }
+
+            th, td {
+                padding: 8px;
+                font-size: 0.85em;
+            }
+            
+            .order-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🩸 Blood Availability</h1>
+            <p>Current Hospital Blood Inventory</p>
+            <div class="header-actions">
+                <button class="track-btn" onclick="trackBooking()">🔎 Track Booking</button>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- Hospital Inventory Section -->
+            <div class="section" id="inventorySection">
+                <div class="section-header">
+                    <span class="icon">🏥</span>
+                    <h2>Hospital Blood Inventory</h2>
+                </div>
+                <div id="inventoryContent">
+                    <div class="loading">Loading inventory data...</div>
+                </div>
+            </div>
+
+            <!-- Delivery Orders Section -->
+            <div class="section" id="deliveryOrdersSection">
+                <div class="section-header">
+                    <span class="icon">🚚</span>
+                    <h2>Delivery Orders</h2>
+                </div>
+                <div id="deliveryOrdersContent">
+                    <div class="loading">Loading delivery orders...</div>
+                </div>
+            </div>
+
+            <div class="back-link">
+                <a href="index.html">← Back to Home</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Blood Request Modal -->
+    <div id="requestModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🩸 Request Blood Units</h2>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="hospital-info" id="modalHospitalInfo">
+                    <!-- Hospital info will be populated here -->
+                </div>
+                <form id="requestForm" onsubmit="handleRequest(event)">
+                    <div class="form-group">
+                        <label for="bloodType">Blood Type *</label>
+                        <select id="bloodType" required onchange="updateAvailableUnits()">
+                            <option value="">Select blood type</option>
+                            <option value="a_plus">A+</option>
+                            <option value="a_minus">A-</option>
+                            <option value="b_plus">B+</option>
+                            <option value="b_minus">B-</option>
+                            <option value="o_plus">O+</option>
+                            <option value="o_minus">O-</option>
+                            <option value="ab_plus">AB+</option>
+                            <option value="ab_minus">AB-</option>
+                        </select>
+                        <div id="availableUnits" class="available-units" style="display: none;"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="units">Number of Units *</label>
+                        <input type="number" id="units" min="1" required placeholder="Enter number of units">
+                    </div>
+                    <div class="form-group">
+                        <label for="deliveryMethod">Delivery Method *</label>
+                        <select id="deliveryMethod" required>
+                            <option value="">Select delivery method</option>
+                            <option value="pick-up">Pick-up</option>
+                            <option value="delivery">Delivery</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="requesterName">Your Name *</label>
+                        <input type="text" id="requesterName" required placeholder="Enter your name">
+                    </div>
+                    <div class="form-group">
+                        <label for="requesterContact">Contact Number *</label>
+                        <input type="tel" id="requesterContact" required placeholder="Enter contact number" pattern="[0-9]{10,}">
+                    </div>
+                    <div class="form-group">
+                        <label for="requesterHospital">Hospital Name *</label>
+                        <input type="text" id="requesterHospital" required placeholder="Enter hospital name">
+                    </div>
+                    <div class="form-group">
+                        <label for="doctorName">Doctor Name *</label>
+                        <input type="text" id="doctorName" required placeholder="Enter doctor name">
+                    </div>
+                    <div class="form-group">
+                        <label for="requesterAddress">Address *</label>
+                        <textarea id="requesterAddress" required placeholder="Enter complete address" style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1em; font-family: inherit; min-height: 80px; resize: vertical;"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="cause">Cause/Reason *</label>
+                        <textarea id="cause" required placeholder="Enter reason for blood requirement" style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1em; font-family: inherit; min-height: 80px; resize: vertical;"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                <button type="submit" form="requestForm" class="btn btn-primary">Submit Request</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentHospitalData = null;
+
+        // Function to get blood count class
+        function getBloodCountClass(count) {
+            const num = parseInt(count) || 0;
+            if (num === 0) return 'zero';
+            if (num < 10) return 'low';
+            if (num < 50) return 'medium';
+            return 'high';
+        }
+
+        // Open request modal
+        function openRequestModal(hospitalData) {
+            currentHospitalData = hospitalData;
+            const modal = document.getElementById('requestModal');
+            const hospitalInfo = document.getElementById('modalHospitalInfo');
+            
+            // Map Excel column names to expected properties
+            const hospitalName = hospitalData['Hospital Name'] || hospitalData.hospitalName || 'N/A';
+            const city = hospitalData['City'] || hospitalData.city || 'N/A';
+            const locality = hospitalData['Locality'] || hospitalData.locality || 'N/A';
+            const contact = hospitalData['Contact'] || hospitalData.contact || 'N/A';
+            
+            hospitalInfo.innerHTML = `
+                <h3>${hospitalName}</h3>
+                <p><strong>Location:</strong> ${locality}, ${city}</p>
+                <p><strong>Contact:</strong> ${contact}</p>
+            `;
+            
+            modal.style.display = 'block';
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('requestModal').style.display = 'none';
+            document.getElementById('requestForm').reset();
+            document.getElementById('availableUnits').style.display = 'none';
+            currentHospitalData = null;
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('requestModal');
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+
+        // Update available units display
+        // Update this function in blood-availability.html
+function updateAvailableUnits() {
+    const bloodType = document.getElementById('bloodType').value; // e.g., "a_plus"
+    const availableDiv = document.getElementById('availableUnits');
+    
+    if (!bloodType || !currentHospitalData) {
+        availableDiv.style.display = 'none';
+        return;
+    }
+    
+    // Map the dropdown value to the Excel key
+    const typeMapping = {
+        'a_plus': 'A+', 'a_minus': 'A-',
+        'b_plus': 'B+', 'b_minus': 'B-',
+        'o_plus': 'O+', 'o_minus': 'O-',
+        'ab_plus': 'AB+', 'ab_minus': 'AB-'
+    };
+    
+    const excelKey = typeMapping[bloodType];
+    const available = currentHospitalData[excelKey] || 0;
+    
+    availableDiv.textContent = `Available Units: ${available}`;
+    availableDiv.style.display = 'block';
+    document.getElementById('units').max = available;
+}
+        // Handle blood request
+        async function handleRequest(event) {
+            event.preventDefault();
+            
+            const bloodType = document.getElementById('bloodType').value;
+            const units = parseInt(document.getElementById('units').value);
+            const deliveryMethod = document.getElementById('deliveryMethod').value;
+            const requesterName = document.getElementById('requesterName').value;
+            const requesterContact = document.getElementById('requesterContact').value;
+            const requesterHospital = document.getElementById('requesterHospital').value;
+            const doctorName = document.getElementById('doctorName').value;
+            const requesterAddress = document.getElementById('requesterAddress').value;
+            const cause = document.getElementById('cause').value;
+            
+            // Map the dropdown value to the Excel key
+            const typeMapping = {
+                'a_plus': 'A+', 'a_minus': 'A-',
+                'b_plus': 'B+', 'b_minus': 'B-',
+                'o_plus': 'O+', 'o_minus': 'O-',
+                'ab_plus': 'AB+', 'ab_minus': 'AB-'
+            };
+            
+            const excelKey = typeMapping[bloodType];
+            const available = parseInt(currentHospitalData[excelKey]) || 0;
+            
+            if (units > available) {
+                alert(`Sorry, only ${available} units of ${excelKey} are available.`);
+                return;
+            }
+            
+            const requestData = {
+                sourceHospital: currentHospitalData['Hospital Name'] || currentHospitalData.hospitalName || 'N/A',
+                sourceCity: currentHospitalData['City'] || currentHospitalData.city || 'N/A',
+                sourceLocality: currentHospitalData['Locality'] || currentHospitalData.locality || 'N/A',
+                sourceContact: currentHospitalData['Contact'] || currentHospitalData.contact || 'N/A',
+                bloodType: bloodType,
+                units: units,
+                deliveryMethod: deliveryMethod,
+                requesterName: requesterName,
+                requesterContact: requesterContact,
+                requesterHospital: requesterHospital,
+                doctorName: doctorName,
+                requesterAddress: requesterAddress,
+                cause: cause
+            };
+            
+            console.log('Sending request data:', requestData); // Debug log
+            
+            try {
+                const response = await fetch('/api/request-blood', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(requestData)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    let message = `Booking confirmed! ✅\n\nBooking ID: ${result.bookingId || 'N/A'}\nPickup OTP: ${result.pickupOtp || 'N/A'}\n\n${units} units of ${excelKey} have been reserved.\n\nThe hospital will contact you at ${requesterContact}.`;
+                    
+                    if (result.driverAssigned && result.driverAssigned !== 'N/A') {
+                        message += `\n\nAssigned Driver: ${result.driverAssigned}`;
+                    }
+
+                    message += `\n\nTip: Save the Booking ID — you can use it to track/update status.`;
+                    
+                    alert(message);
+                    closeModal();
+                    // Reload inventory to show updated counts
+                    loadInventory();
+                    // Reload delivery orders to show new orders
+                    loadDeliveryOrders();
+                } else {
+                    alert('Error processing request: ' + result.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error processing request. Please try again.');
+            }
+        }
+
+        // Quick tracker (prompts for booking id)
+        async function trackBooking() {
+            const bookingId = prompt('Enter your Booking ID (ex: BLD-...)');
+            if (!bookingId) return;
+
+            try {
+                const resp = await fetch(`/api/blood-bookings/${encodeURIComponent(bookingId)}`);
+                const result = await resp.json();
+                if (!result.success) {
+                    alert(result.message || 'Booking not found');
+                    return;
+                }
+                const b = result.booking;
+                const msg = `🧾 Booking: ${b['Booking ID']}`
+                    + `\nStatus: ${b.Status}`
+                    + `\nHospital: ${b['Hospital Name']}`
+                    + `\nBlood: ${b['Blood Type']} (${b.Units} units)`
+                    + `\nDelivery: ${b['Delivery Method']}`
+                    + `\nDriver: ${b['Driver Name'] || 'N/A'} (${b['Driver Phone'] || 'N/A'})`;
+                alert(msg);
+            } catch (e) {
+                console.error(e);
+                alert('Could not fetch booking status.');
+            }
+        }
+
+        // Load Inventory Data
+        async function loadInventory() {
+    try {
+        const response = await fetch('/api/inventory-list');
+        const result = await response.json();
+
+        const inventoryContent = document.getElementById('inventoryContent');
+
+        if (!result.success) {
+            inventoryContent.innerHTML = '<div class="error">Failed to load inventory data</div>';
+            return;
+        }
+
+        if (!result.inventory || result.inventory.length === 0) {
+            inventoryContent.innerHTML = '<div class="no-data">No inventory data available</div>';
+            return;
+        }
+
+        let html = `
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Hospital Name</th>
+                            <th>City</th>
+                            <th>Locality</th>
+                            <th>Contact</th>
+                            <th>A+</th>
+                            <th>A-</th>
+                            <th>B+</th>
+                            <th>B-</th>
+                            <th>O+</th>
+                            <th>O-</th>
+                            <th>AB+</th>
+                            <th>AB-</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+        `;
+
+        result.inventory.forEach(item => {
+            // Mapping Excel column names (keys) to variables
+            // Note: item['A+'] is how JS accesses keys with symbols
+            const hName = item['Hospital Name'] || 'N/A';
+            const city = item['City'] || 'N/A';
+            const loc = item['Locality'] || 'N/A';
+            const cont = item['Contact'] || 'N/A';
+            
+            const ap = item['A+'] || 0;
+            const am = item['A-'] || 0;
+            const bp = item['B+'] || 0;
+            const bm = item['B-'] || 0;
+            const op = item['O+'] || 0;
+            const om = item['O-'] || 0;
+            const abp = item['AB+'] || 0;
+            const abm = item['AB-'] || 0;
+
+            html += `
+                <tr>
+                    <td><strong>${hName}</strong></td>
+                    <td>${city}</td>
+                    <td>${loc}</td>
+                    <td>${cont}</td>
+                    <td><span class="blood-count ${getBloodCountClass(ap)}">${ap}</span></td>
+                    <td><span class="blood-count ${getBloodCountClass(am)}">${am}</span></td>
+                    <td><span class="blood-count ${getBloodCountClass(bp)}">${bp}</span></td>
+                    <td><span class="blood-count ${getBloodCountClass(bm)}">${bm}</span></td>
+                    <td><span class="blood-count ${getBloodCountClass(op)}">${op}</span></td>
+                    <td><span class="blood-count ${getBloodCountClass(om)}">${om}</span></td>
+                    <td><span class="blood-count ${getBloodCountClass(abp)}">${abp}</span></td>
+                    <td><span class="blood-count ${getBloodCountClass(abm)}">${abm}</span></td>
+                    <td><button class="request-btn" onclick='openRequestModal(${JSON.stringify(item)})'>Request</button></td>
+                </tr>
+            `;
+        });
+
+        html += `</tbody></table></div>`;
+        inventoryContent.innerHTML = html;
+    } catch (error) {
+        console.error('Error loading inventory:', error);
+        document.getElementById('inventoryContent').innerHTML = 
+            '<div class="error">Error loading inventory data.</div>';
+    }
+}
+        // Load Donors Data
+        async function loadDonors() {
+    try {
+        const response = await fetch('/api/donors');
+        const result = await response.json();
+        const donorsContent = document.getElementById('donorsContent');
+
+        if (!result.success || result.donors.length === 0) {
+            donorsContent.innerHTML = '<div class="no-data">No registered donors found</div>';
+            return;
+        }
+
+        let html = '<div class="donor-grid">';
+        result.donors.forEach(donor => {
+            // Determine what to show in the primary badge
+            const detailLabel = donor.Type === 'blood' ? 'Blood Group' : 'Organ';
+            const detailValue = donor.Type === 'blood' ? donor['Blood Group'] : donor['Organ Type'];
+
+            html += `
+                <div class="donor-card">
+                    <h3>${donor['First Name']} ${donor['Last Name']}</h3>
+                    <div class="donor-info">
+                        <div class="donor-info-row">
+                            <strong>${detailLabel}:</strong>
+                            <span style="color:#e74c3c; font-weight:bold;">${detailValue}</span>
+                        </div>
+                        <div class="donor-info-row">
+                            <strong>Phone:</strong>
+                            <span>${donor.Phone}</span>
+                        </div>
+                        <div class="donor-info-row">
+                            <strong>Registered:</strong>
+                            <span>${donor.Date}</span>
+                        </div>
+                    </div>
+                    <span class="donor-badge ${donor.Type}">${donor.Type.toUpperCase()} DONOR</span>
+                </div>
+            `;
+        });
+        html += '</div>';
+        donorsContent.innerHTML = html;
+    } catch (e) {
+        donorsContent.innerHTML = '<div class="error">Error loading donor data</div>';
+    }
+}
+
+        // Load Delivery Orders
+        async function loadDeliveryOrders() {
+            try {
+                const response = await fetch('/api/blood-requests');
+                const result = await response.json();
+                console.log('Delivery orders response:', result); // Debug log
+                const ordersContent = document.getElementById('deliveryOrdersContent');
+
+                if (!result.success) {
+                    console.error('Failed to load delivery orders:', result.error);
+                    ordersContent.innerHTML = '<div class="error">Failed to load delivery orders</div>';
+                    return;
+                }
+
+                if (result.requests.length === 0) {
+                    ordersContent.innerHTML = '<div class="no-data">No delivery orders found</div>';
+                    return;
+                }
+
+                console.log('Number of delivery orders:', result.requests.length); // Debug log
+                let html = '<div class="order-grid">';
+                result.requests.forEach((order, index) => {
+                    console.log('Processing order:', order); // Debug log
+                    const bloodTypeDisplay = order['Blood Type'] ? order['Blood Type'].replace(/_/g, '').toUpperCase() : 'N/A';
+                    
+                    html += `
+                        <div class="order-card">
+                            <div class="order-header">
+                                <div class="order-id">Order #${index + 1}</div>
+                                <div class="order-status">${order['Status'] || 'Pending'}</div>
+                            </div>
+                            <div class="order-details">
+                                <div class="order-detail-row">
+                                    <strong>Blood Type:</strong>
+                                    <span><span class="blood-type-badge">${bloodTypeDisplay}</span></span>
+                                </div>
+                                <div class="order-detail-row">
+                                    <strong>Units:</strong>
+                                    <span>${order['Units'] || 'N/A'}</span>
+                                </div>
+                                <div class="order-detail-row">
+                                    <strong>From Hospital:</strong>
+                                    <span>${order['Source Hospital'] || 'N/A'}</span>
+                                </div>
+                                <div class="order-detail-row">
+                                    <strong>Location:</strong>
+                                    <span>${order['Source Locality'] || 'N/A'}, ${order['Source City'] || 'N/A'}</span>
+                                </div>
+                                <div class="order-detail-row">
+                                    <strong>Requester:</strong>
+                                    <span>${order['Requester Name'] || 'N/A'}</span>
+                                </div>
+                                <div class="order-detail-row">
+                                    <strong>Contact:</strong>
+                                    <span>${order['Requester Contact'] || 'N/A'}</span>
+                                </div>
+                                <div class="order-detail-row">
+                                    <strong>Destination:</strong>
+                                    <span>${order['Requester Hospital'] || 'N/A'}</span>
+                                </div>
+                                <div class="order-detail-row">
+                                    <strong>Address:</strong>
+                                    <span>${order['Address'] || 'N/A'}</span>
+                                </div>
+                                <div class="order-detail-row">
+                                    <strong>Doctor:</strong>
+                                    <span>${order['Doctor Name'] || 'N/A'}</span>
+                                </div>
+                                <div class="order-detail-row">
+                                    <strong>Cause:</strong>
+                                    <span>${order['Cause'] || 'N/A'}</span>
+                                </div>
+                                <div class="order-detail-row">
+                                    <strong>Assigned Driver:</strong>
+                                    <span>${order['Driver Name'] || 'N/A'}</span>
+                                </div>
+                                <div class="order-detail-row">
+                                    <strong>Driver Phone:</strong>
+                                    <span>${order['Driver Phone'] || 'N/A'}</span>
+                                </div>
+                                <div class="order-detail-row">
+                                    <strong>Request Date:</strong>
+                                    <span>${order['Request Date'] || 'N/A'}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+                ordersContent.innerHTML = html;
+            } catch (e) {
+                console.error('Error loading delivery orders:', e);
+                document.getElementById('deliveryOrdersContent').innerHTML = 
+                    '<div class="error">Error loading delivery orders.</div>';
+            }
+        }
+
+        // Load all data when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            loadInventory();
+            loadDeliveryOrders();
+
+            // If the user came from the new home-page search, preselect that hospital.
+            try {
+                const saved = localStorage.getItem('selectedHospital');
+                if (saved) {
+                    const selected = JSON.parse(saved);
+                    localStorage.removeItem('selectedHospital');
+                    setTimeout(() => openRequestModal(selected), 350);
+                }
+            } catch (e) {
+                console.warn('Could not restore selected hospital:', e);
+            }
+        });
+    </script>
+</body>
+</html>
