@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blood Life Line | Smart Blood Connect</title>
+<style>
+:root{--red:#d62839;--dark:#171923;--muted:#667085;--bg:#f7f8fc;--card:#fff;--line:#e8eaf0;--green:#16a34a;--amber:#d97706}
+*{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}body{font-family:Inter,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--dark);line-height:1.5}
+button,input,select{font:inherit}.nav{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.94);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:14px 5vw}
+.brand{font-weight:900;color:var(--red);font-size:1.15rem}.navlinks{display:flex;gap:18px;align-items:center}.navlinks a{color:#475467;text-decoration:none;font-weight:650}.navlinks a:hover{color:var(--red)}
+.container{width:min(1180px,92%);margin:auto}.hero{padding:72px 0 44px;background:radial-gradient(circle at 85% 15%,#ffe2e5,transparent 30%),linear-gradient(135deg,#fff 0%,#fff5f6 100%)}
+.hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:40px;align-items:center}.eyebrow{color:var(--red);font-weight:800;letter-spacing:.08em;text-transform:uppercase;font-size:.82rem}
+h1{font-size:clamp(2.5rem,6vw,4.7rem);line-height:1.02;margin:12px 0 18px}.hero p{font-size:1.08rem;color:var(--muted);max-width:650px}.actions{display:flex;flex-wrap:wrap;gap:12px;margin:25px 0}.btn{border:0;border-radius:12px;padding:12px 18px;font-weight:800;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}.primary{background:var(--red);color:#fff}.secondary{background:#fff;color:var(--dark);border:1px solid var(--line)}.btn:hover{transform:translateY(-1px);box-shadow:0 7px 20px #00000014}
+.hero-card{background:#171923;color:#fff;border-radius:24px;padding:26px;box-shadow:0 20px 60px #11182724}.hero-card h2{margin-bottom:8px}.pulse{display:flex;align-items:center;gap:10px;color:#d1fae5;font-weight:700;margin:16px 0}.dot{width:10px;height:10px;background:#22c55e;border-radius:50%;box-shadow:0 0 0 7px #22c55e22}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:20px}.stat{background:#ffffff12;border:1px solid #ffffff18;border-radius:14px;padding:15px}.stat b{font-size:1.7rem;display:block}.stat span{font-size:.8rem;color:#cbd5e1}
+section{padding:60px 0}.section-head{text-align:center;margin-bottom:30px}.section-head h2{font-size:2rem}.section-head p{color:var(--muted);margin-top:6px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px;transition:.2s}.card:hover{transform:translateY(-4px);box-shadow:0 12px 30px #1018280d}.icon{font-size:2rem;margin-bottom:12px}.card h3{margin-bottom:7px}.card p{color:var(--muted);font-size:.94rem}.card button{margin-top:16px;width:100%}
+.searchbox{background:#fff;border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:0 8px 25px #1018280a}.filters{display:grid;grid-template-columns:1fr 1fr auto;gap:12px}.input{width:100%;padding:12px 14px;border:1px solid #d0d5dd;border-radius:10px;background:#fff}.input:focus{outline:2px solid #fecdd3;border-color:var(--red)}
+.results{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px}.hospital{border:1px solid var(--line);border-radius:15px;padding:18px;background:#fff}.hospital-top{display:flex;justify-content:space-between;gap:12px}.badge{padding:4px 9px;border-radius:999px;font-size:.75rem;font-weight:800}.available{background:#dcfce7;color:#166534}.low{background:#fef3c7;color:#92400e}.empty{background:#fee2e2;color:#991b1b}.blood-row{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}.blood-chip{padding:6px 9px;border-radius:9px;background:#f8fafc;border:1px solid var(--line);font-size:.8rem}.blood-chip b{color:var(--red)}
+.assistant{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:stretch}.chat{background:#171923;color:#fff;border-radius:20px;padding:24px}.chat-bubble{background:#272b38;border-radius:14px;padding:13px;margin:10px 0;color:#e5e7eb}.quick{display:flex;flex-wrap:wrap;gap:8px}.quick button{border:1px solid #4b5563;background:#202431;color:#fff;border-radius:999px;padding:8px 12px;cursor:pointer}.quick button:hover{background:var(--red);border-color:var(--red)}
+.compat{background:#fff;border:1px solid var(--line);border-radius:20px;padding:24px}.compat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px}.type{padding:12px;border-radius:10px;text-align:center;background:#fff5f6;border:1px solid #ffd7dc;font-weight:800;cursor:pointer}.type:hover,.type.active{background:var(--red);color:#fff}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}.step{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px}.step-no{width:34px;height:34px;border-radius:50%;background:#ffe1e5;color:var(--red);display:grid;place-items:center;font-weight:900;margin-bottom:12px}
+.cta{background:linear-gradient(135deg,#d62839,#9f1239);color:#fff;border-radius:24px;padding:36px;display:flex;justify-content:space-between;gap:20px;align-items:center}.cta p{opacity:.88}
+.footer{padding:30px 0;color:#667085;text-align:center;font-size:.88rem}
+.modal{position:fixed;inset:0;background:#11182799;display:none;place-items:center;z-index:50;padding:20px}.modal.open{display:grid}.modal-box{background:#fff;border-radius:18px;padding:25px;width:min(500px,100%);position:relative}.close{position:absolute;right:15px;top:12px;border:0;background:transparent;font-size:1.5rem;cursor:pointer}.modal-box h3{margin-bottom:8px}.modal-box p{color:var(--muted);margin-bottom:18px}.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}.form-row>*{min-width:0}.notice{padding:12px;border-radius:10px;margin-top:12px;display:none}.notice.ok{display:block;background:#dcfce7;color:#166534}.notice.err{display:block;background:#fee2e2;color:#991b1b}
+@media(max-width:850px){.hero-grid,.assistant{grid-template-columns:1fr}.grid,.results{grid-template-columns:1fr 1fr}.steps{grid-template-columns:1fr 1fr}.stats{grid-template-columns:1fr 1fr}.navlinks{display:none}.filters{grid-template-columns:1fr}}
+@media(max-width:550px){.grid,.results,.steps{grid-template-columns:1fr}.hero{padding-top:45px}.cta{flex-direction:column;align-items:flex-start}.form-row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <div class="brand">🩸 Blood Life Line</div>
+  <div class="navlinks"><a href="#find">Find Blood</a><a href="#services">Services</a><a href="#how">How it works</a><a href="emergency-contact.html">Emergency</a></div>
+</nav>
+
+<header class="hero">
+<div class="container hero-grid">
+  <div>
+    <div class="eyebrow">Smart blood connection platform</div>
+    <h1>Find blood.<br><span style="color:var(--red)">Connect faster.</span></h1>
+    <p>Blood Life Line connects patients, hospitals, donors and delivery volunteers through one simple workflow — from checking availability to tracking a blood request.</p>
+    <div class="actions">
+      <a class="btn primary" href="#find">🩸 Find Blood Now</a>
+      <button class="btn secondary" onclick="openModal('trackModal')">📍 Track Request</button>
+      <a class="btn secondary" href="registration.html">❤️ Become a Donor</a>
+    </div>
+  </div>
+  <div class="hero-card">
+    <div class="eyebrow" style="color:#fda4af">Live platform snapshot</div>
+    <h2>What can you do?</h2>
+    <div class="pulse"><span class="dot"></span><span id="liveText">Checking live data…</span></div>
+    <div class="stats">
+      <div class="stat"><b id="hospitalCount">—</b><span>Hospitals</span></div>
+      <div class="stat"><b id="donorCount">—</b><span>Donors</span></div>
+      <div class="stat"><b id="unitCount">—</b><span>Blood units</span></div>
+      <div class="stat"><b id="requestCount">—</b><span>Requests</span></div>
+    </div>
+  </div>
+</div>
+</header>
+
+<section id="find">
+<div class="container">
+  <div class="section-head"><h2>🔎 Find available blood</h2><p>Choose a blood group and search the connected hospital inventory.</p></div>
+  <div class="searchbox">
+    <div class="filters">
+      <select id="bloodFilter" class="input" onchange="filterInventory()">
+        <option value="">All blood groups</option><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>O+</option><option>O-</option><option>AB+</option><option>AB-</option>
+      </select>
+      <input id="hospitalFilter" class="input" placeholder="Search hospital, city or locality…" oninput="filterInventory()">
+      <button class="btn primary" onclick="loadInventory()">↻ Refresh</button>
+    </div>
+    <div id="inventoryResults" class="results"><div class="card">Loading live inventory…</div></div>
+  </div>
+</div>
+</section>
+
+<section id="services">
+<div class="container">
+  <div class="section-head"><h2>Everything in one place</h2><p>Designed around the actions a patient or hospital needs most.</p></div>
+  <div class="grid">
+    <div class="card"><div class="icon">🩸</div><h3>Request Blood</h3><p>Search inventory, select a hospital, enter the request details and receive a booking ID.</p><button class="btn primary" onclick="document.getElementById('find').scrollIntoView()">Start request</button></div>
+    <div class="card"><div class="icon">📍</div><h3>Track a Request</h3><p>Use your booking ID to check the current status, hospital, units and delivery information.</p><button class="btn secondary" onclick="openModal('trackModal')">Track now</button></div>
+    <div class="card"><div class="icon">❤️</div><h3>Become a Donor</h3><p>Register as a blood or organ donor and help the connected network grow.</p><a class="btn secondary" href="registration.html">Register</a></div>
+    <div class="card"><div class="icon">🏥</div><h3>Hospital Portal</h3><p>Hospitals can manage inventory and review registered donors and blood requests.</p><a class="btn secondary" href="hospital-portal.html">Open portal</a></div>
+    <div class="card"><div class="icon">🏍️</div><h3>Delivery Volunteers</h3><p>Join the blood-bike team and support emergency delivery workflows.</p><a class="btn secondary" href="driver-registration.html">Join team</a></div>
+    <div class="card"><div class="icon">🚨</div><h3>Emergency Help</h3><p>Keep the emergency contact option one tap away for urgent requirements.</p><a class="btn primary" href="emergency-contact.html">Emergency</a></div>
+  </div>
+</div>
+</section>
+
+<section>
+<div class="container assistant">
+  <div class="chat">
+    <div class="eyebrow" style="color:#fda4af">Quick assistant</div><h2>What do you need?</h2>
+    <div class="chat-bubble" id="assistantReply">Hi! I can guide you through the platform. Pick an option below.</div>
+    <div class="quick">
+      <button onclick="assist('blood')">I need blood</button>
+      <button onclick="assist('donor')">I want to donate</button>
+      <button onclick="assist('track')">Track my request</button>
+      <button onclick="assist('hospital')">I'm a hospital</button>
+    </div>
+  </div>
+  <div class="compat">
+    <h2>🧬 Blood group guide</h2><p style="color:var(--muted)">Select your group for a quick educational compatibility guide.</p>
+    <div class="compat-grid" id="compatGrid"></div>
+    <div id="compatText" class="notice ok" style="display:block;margin-top:15px">Select a group to see a simplified red-cell donation/receipt guide. Always follow medical staff and blood-bank compatibility testing.</div>
+  </div>
+</div>
+</section>
+
+<section id="how">
+<div class="container">
+  <div class="section-head"><h2>How Blood Life Line works</h2><p>A simple four-step journey.</p></div>
+  <div class="steps">
+    <div class="step"><div class="step-no">1</div><h3>Search</h3><p>Find a hospital with the required blood group and available units.</p></div>
+    <div class="step"><div class="step-no">2</div><h3>Request</h3><p>Submit requester, hospital and delivery details through the booking form.</p></div>
+    <div class="step"><div class="step-no">3</div><h3>Connect</h3><p>The backend records the request and can assign a registered delivery volunteer.</p></div>
+    <div class="step"><div class="step-no">4</div><h3>Track</h3><p>Use the generated booking ID to view the request status.</p></div>
+  </div>
+</div>
+</section>
+
+<div class="container">
+  <div class="cta"><div><h2>Ready to help save time?</h2><p>Register, search inventory or track an existing request.</p></div><a class="btn secondary" href="registration.html">Become a donor →</a></div>
+</div>
+
+<footer class="footer"><div class="container">Blood Life Line • Tech Titans Hackathon Project • Demo application — not a substitute for professional medical or emergency services.</div></footer>
+
+<div class="modal" id="trackModal" onclick="if(event.target===this)closeModal('trackModal')">
+ <div class="modal-box">
+  <button class="close" onclick="closeModal('trackModal')">×</button>
+  <h3>📍 Track your blood request</h3><p>Enter the booking ID you received after submitting a request.</p>
+  <div class="form-row"><input id="trackId" class="input" placeholder="e.g. BLD-..."><button class="btn primary" onclick="trackBooking()">Track</button></div>
+  <div id="trackResult"></div>
+ </div>
+</div>
+
+<script>
+let inventory=[];
+const groups=['A+','A-','B+','B-','O+','O-','AB+','AB-'];
+const compat={
+'A+':{receive:'A+, A-, O+, O-',give:'A+, AB+'},'A-':{receive:'A-, O-',give:'A+, A-, AB+, AB-'},
+'B+':{receive:'B+, B-, O+, O-',give:'B+, AB+'},'B-':{receive:'B-, O-',give:'B+, B-, AB+, AB-'},
+'O+':{receive:'O+, O-',give:'A+, B+, O+, AB+'},'O-':{receive:'O-',give:'All ABO/Rh groups'},
+'AB+':{receive:'All ABO/Rh groups',give:'AB+'},'AB-':{receive:'A-, B-, AB-, O-',give:'AB-, AB+'}
+};
+function openModal(id){document.getElementById(id).classList.add('open');document.body.style.overflow='hidden'}
+function closeModal(id){document.getElementById(id).classList.remove('open');document.body.style.overflow=''}
+function safe(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]))}
+async function loadInventory(){
+ const box=document.getElementById('inventoryResults'); box.innerHTML='<div class="card">Loading live inventory…</div>';
+ try{const r=await fetch('/api/inventory-list');const d=await r.json();inventory=d.inventory||[];renderInventory();updateStats()}
+ catch(e){box.innerHTML='<div class="card"><b>Could not load live inventory.</b><p>Start the Node server and refresh.</p></div>';document.getElementById('liveText').textContent='Server connection needed'}
+}
+function renderInventory(){
+ const type=document.getElementById('bloodFilter').value.toUpperCase(), q=document.getElementById('hospitalFilter').value.toLowerCase();
+ const out=inventory.filter(h=>{const text=`${h['Hospital Name']} ${h.City} ${h.Locality}`.toLowerCase();return(!q||text.includes(q))&&(!type||Number(h[type]||0)>0)});
+ const box=document.getElementById('inventoryResults');
+ if(!out.length){box.innerHTML='<div class="card" style="grid-column:1/-1"><h3>No matching stock found</h3><p>Try another blood group, location or refresh the inventory.</p></div>';return}
+ box.innerHTML=out.map(h=>{
+   const chosen=type||groups.find(g=>Number(h[g]||0)>0)||'A+';
+   const units=Number(h[chosen]||0); const cls=units<=0?'empty':units<=2?'low':'available';
+   const chips=groups.map(g=>`<span class="blood-chip">${g} <b>${Number(h[g]||0)}</b></span>`).join('');
+   return `<div class="hospital"><div class="hospital-top"><div><h3>${safe(h['Hospital Name'])}</h3><small>${safe(h.Locality)}, ${safe(h.City)}</small></div><span class="badge ${cls}">${units>2?'Available':units>0?'Low stock':'Unavailable'}</span></div><div class="blood-row">${chips}</div><button class="btn primary" style="width:100%;margin-top:14px" onclick='requestFromHospital(${JSON.stringify(h)})'>Request from this hospital</button></div>`
+ }).join('');
+}
+function filterInventory(){renderInventory()}
+function requestFromHospital(h){
+ localStorage.setItem('selectedHospital',JSON.stringify(h)); window.location.href='blood-availability.html';
+}
+async function updateStats(){
+ document.getElementById('hospitalCount').textContent=inventory.length;
+ document.getElementById('unitCount').textContent=inventory.reduce((s,h)=>s+groups.reduce((x,g)=>x+Number(h[g]||0),0),0);
+ try{const [d,r]=await Promise.all([fetch('/api/donors'),fetch('/api/blood-requests')]);const dj=await d.json(),rj=await r.json();document.getElementById('donorCount').textContent=(dj.donors||[]).length;document.getElementById('requestCount').textContent=(rj.requests||[]).length;document.getElementById('liveText').textContent='Live inventory connected'}
+ catch(e){}
+}
+async function trackBooking(){
+ const id=document.getElementById('trackId').value.trim(), box=document.getElementById('trackResult');
+ if(!id){box.className='notice err';box.textContent='Please enter a booking ID.';return}
+ try{const r=await fetch('/api/blood-bookings/'+encodeURIComponent(id));const d=await r.json();if(!d.success)throw new Error(d.message||'Booking not found');const b=d.booking;box.className='notice ok';box.innerHTML=`<b>${safe(b.Status||'Pending')}</b><br>Booking: ${safe(b['Booking ID'])}<br>Blood: ${safe(b['Blood Type'])} • ${safe(b.Units)} unit(s)<br>Hospital: ${safe(b['Hospital Name'])}<br>Delivery: ${safe(b['Delivery Method'])}<br>Driver: ${safe(b['Driver Name']||'Not assigned')}` }catch(e){box.className='notice err';box.textContent=e.message||'Could not find this booking.'}
+}
+function assist(kind){
+ const reply=document.getElementById('assistantReply');
+ if(kind==='blood'){reply.textContent='Choose a blood group in Find Blood, then select Request from a hospital. Your request will receive a booking ID.';document.getElementById('find').scrollIntoView()}
+ if(kind==='donor'){reply.textContent='Great! Use Donor Registration to register your blood or organ donation details.';location.href='registration.html'}
+ if(kind==='track'){reply.textContent='Enter the booking ID from your confirmation and I’ll show the latest status.';openModal('trackModal')}
+ if(kind==='hospital'){reply.textContent='Hospitals can update inventory and review requests through the Hospital Portal.';location.href='hospital-portal.html'}
+}
+function initCompat(){
+ const grid=document.getElementById('compatGrid');grid.innerHTML=groups.map(g=>`<div class="type" onclick="showCompat('${g}',this)">${g}</div>`).join('');
+}
+function showCompat(g,el){document.querySelectorAll('.type').forEach(x=>x.classList.remove('active'));el.classList.add('active');const c=compat[g];document.getElementById('compatText').innerHTML=`<b>${g}</b> can receive: ${c.receive}<br><b>${g}</b> can donate to: ${c.give}<br><small>This is a simplified educational guide; actual transfusion decisions require clinical testing and blood-bank protocols.</small>`}
+initCompat();loadInventory();
+</script>
+</body>
+</html>

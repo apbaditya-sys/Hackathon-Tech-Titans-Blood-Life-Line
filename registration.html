@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Donor Registration | Blood Life Line</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Segoe UI,Arial;background:linear-gradient(135deg,#fff4f5,#f4f1ff);color:#172033}.wrap{width:min(760px,92%);margin:40px auto}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}.back{color:#d62839;text-decoration:none;font-weight:800}.card{background:#fff;border:1px solid #e8eaf0;border-radius:24px;padding:34px;box-shadow:0 18px 50px #11182712}.title{text-align:center}.title .emoji{font-size:2.4rem}.title h1{margin:5px 0}.title p{color:#667085}.progress{display:flex;gap:8px;margin:25px 0}.bar{height:7px;flex:1;border-radius:10px;background:#e5e7eb}.bar.active{background:#d62839}.step{display:none}.step.active{display:block}.grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}.field{margin:14px 0}.field label{display:block;font-weight:750;margin-bottom:7px}.field input,.field select,.field textarea{width:100%;padding:12px 13px;border:1px solid #d0d5dd;border-radius:10px;font:inherit}.field input:focus,.field select:focus,.field textarea:focus{outline:2px solid #fecdd3;border-color:#d62839}.actions{display:flex;gap:10px;margin-top:22px}.btn{flex:1;padding:12px;border:0;border-radius:10px;font-weight:800;cursor:pointer}.primary{background:#d62839;color:#fff}.secondary{background:#f8fafc;border:1px solid #e5e7eb}.choice{display:grid;grid-template-columns:1fr 1fr;gap:12px}.choice label{border:2px solid #e5e7eb;border-radius:14px;padding:18px;text-align:center;cursor:pointer}.choice input{display:none}.choice input:checked+span{color:#d62839}.choice label:has(input:checked){border-color:#d62839;background:#fff5f6}.success{text-align:center;display:none}.success.show{display:block}.success .big{font-size:4rem}.error{color:#b91c1c;background:#fee2e2;padding:10px;border-radius:10px;display:none}.hint{font-size:.85rem;color:#667085}.summary{background:#f8fafc;border-radius:14px;padding:16px;margin-top:15px}
+@media(max-width:600px){.grid,.choice{grid-template-columns:1fr}.card{padding:22px}.actions{flex-direction:column}}
+</style>
+</head>
+<body><div class="wrap">
+<div class="top"><b style="color:#d62839">🩸 Blood Life Line</b><a class="back" href="index.html">← Home</a></div>
+<div class="card">
+<div id="formView">
+<div class="title"><div class="emoji">❤️</div><h1>Become a donor</h1><p>A few details help hospitals connect with registered donors.</p></div>
+<div class="progress"><div class="bar active" id="p1"></div><div class="bar" id="p2"></div><div class="bar" id="p3"></div></div>
+<form id="regForm">
+<div class="step active" data-step="1"><h2>1. Your details</h2>
+<div class="grid"><div class="field"><label>First name</label><input id="fn" required></div><div class="field"><label>Last name</label><input id="ln" required></div></div>
+<div class="grid"><div class="field"><label>Phone</label><input id="ph" type="tel" inputmode="numeric" pattern="[0-9]{10}" maxlength="10" required></div><div class="field"><label>Email</label><input id="em" type="email" required></div></div>
+<div class="actions"><button type="button" class="btn primary" onclick="nextStep(2)">Continue →</button></div></div>
+<div class="step" data-step="2"><h2>2. What would you like to donate?</h2>
+<div class="choice"><label><input type="radio" name="donorType" value="blood" checked onchange="toggleType()"><span>🩸<br><b>Blood</b><br><small>Register your blood group</small></span></label>
+<label><input type="radio" name="donorType" value="organ" onchange="toggleType()"><span>🫶<br><b>Organ</b><br><small>Register your organ intent</small></span></label></div>
+<div id="bloodBox" class="field"><label>Blood group</label><select id="bg"><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>O+</option><option>O-</option><option>AB+</option><option>AB-</option></select></div>
+<div id="organBox" class="field" style="display:none"><label>Organ for donation</label><select id="og"><option>Kidney</option><option>Liver</option></select></div>
+<div class="actions"><button type="button" class="btn secondary" onclick="nextStep(1)">← Back</button><button type="button" class="btn primary" onclick="nextStep(3)">Continue →</button></div></div>
+<div class="step" data-step="3"><h2>3. Location & confirmation</h2><div class="field"><label>Address</label><textarea id="ad" rows="4" required placeholder="Enter your area/address"></textarea></div>
+<div id="summary" class="summary"></div><div id="error" class="error"></div>
+<div class="actions"><button type="button" class="btn secondary" onclick="nextStep(2)">← Back</button><button type="submit" class="btn primary" id="submitBtn">Register me ❤️</button></div>
+<p class="hint">Demo project: registration details are stored in the project's Excel data file.</p></div>
+</form></div>
+<div id="success" class="success"><div class="big">🎉</div><h1>Registration complete!</h1><p id="successText"></p><a class="btn primary" style="display:inline-flex;text-decoration:none;margin-top:15px" href="index.html">Back to Blood Life Line</a></div>
+</div></div>
+<script>
+let step=1;const $=id=>document.getElementById(id);
+function nextStep(n){if(n>step&&step===1&&!$('fn').checkValidity()){$('regForm').reportValidity();return}step=n;document.querySelectorAll('.step').forEach(x=>x.classList.toggle('active',+x.dataset.step===step));for(let i=1;i<=3;i++)$('p'+i).classList.toggle('active',i<=step);if(step===3)updateSummary()}
+function toggleType(){const type=document.querySelector('input[name="donorType"]:checked').value;$('bloodBox').style.display=type==='blood'?'block':'none';$('organBox').style.display=type==='organ'?'block':'none';updateSummary()}
+function updateSummary(){const type=document.querySelector('input[name="donorType"]:checked').value;const detail=type==='blood'?$('bg').value:$('og').value;$('summary').innerHTML=`<b>Ready to register</b><br>${$('fn').value} ${$('ln').value}<br>${type.toUpperCase()} donor • ${detail}<br>${$('ph').value} • ${$('em').value}`}
+$('regForm').addEventListener('submit',async e=>{e.preventDefault();if(!$('regForm').checkValidity())return $('regForm').reportValidity();$('error').style.display='none';$('submitBtn').disabled=true;$('submitBtn').textContent='Saving…';const type=document.querySelector('input[name="donorType"]:checked').value;const data={firstName:$('fn').value.trim(),lastName:$('ln').value.trim(),phone:$('ph').value.trim(),email:$('em').value.trim(),donorType:type,bloodGroup:type==='blood'?$('bg').value:'',organType:type==='organ'?$('og').value:'',address:$('ad').value.trim()};try{const r=await fetch('/api/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});const d=await r.json();if(!r.ok||!d.success)throw new Error(d.message||'Registration failed');$('formView').style.display='none';$('success').classList.add('show');$('successText').textContent=`Thanks, ${data.firstName}! Your ${type} donor registration has been saved.`}catch(err){$('error').textContent=err.message||'Could not save registration. Is the server running?';$('error').style.display='block'}finally{$('submitBtn').disabled=false;$('submitBtn').textContent='Register me ❤️'}});
+</script></body></html>

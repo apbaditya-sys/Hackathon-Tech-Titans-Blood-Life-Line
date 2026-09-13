@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Update - Blood Life Line</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 1200px;
+            margin: 0 auto;
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            text-align: center;
+            padding: 30px 20px;
+        }
+
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 5px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .form-container {
+            padding: 40px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #2c3e50;
+            font-weight: 700;
+            margin-bottom: 8px;
+            font-size: 0.95em;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #e74c3c;
+            box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .section-title {
+            color: #4a4a4a;
+            font-size: 1.2em;
+            font-weight: 700;
+            margin: 30px 0 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .inventory-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background-color: #d32f2f; /* Red color from image */
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 30px;
+        }
+
+        .submit-btn:hover {
+            background-color: #b71c1c;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(211, 47, 47, 0.3);
+        }
+        
+        .submit-btn:disabled {
+            background-color: #e57373;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .back-link a {
+            color: #e74c3c;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .back-link a:hover {
+            color: #c0392b;
+            text-decoration: underline;
+        }
+
+        /* Tile styles */
+        .tiles-container {
+            padding: 40px;
+        }
+        
+        .tiles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .tile-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+        
+        .tile-card:hover {
+            transform: translateY(-5px);
+            border-color: #e74c3c;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .tile-icon {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 15px;
+            background: #e74c3c;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            color: white;
+        }
+        
+        .tile-card h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .tile-card p {
+            color: #7f8c8d;
+        }
+
+        .hospital-select-container {
+            padding: 40px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .hospital-select-group {
+            margin-bottom: 30px;
+        }
+        
+        .hospital-select-group label {
+            display: block;
+            color: #2c3e50;
+            font-weight: 700;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        .hospital-select-group select {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+        
+        .hospital-select-group select:focus {
+            outline: none;
+            border-color: #e74c3c;
+            box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .form-row, .inventory-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .form-container, .tiles-container, .hospital-select-container {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Hospital Blood Inventory Management</h1>
+        </div>
+
+        <!-- Tiles Section -->
+        <div id="tilesSection" class="tiles-container">
+            <div class="tiles-grid">
+                <div class="tile-card" onclick="showSection('register')">
+                    <div class="tile-icon">📝</div>
+                    <h3>Register Hospital</h3>
+                    <p>Register new hospital with blood inventory</p>
+                </div>
+                <div class="tile-card" onclick="showSection('update')">
+                    <div class="tile-icon">🔄</div>
+                    <h3>Inventory Update</h3>
+                    <p>Update existing hospital inventory</p>
+                </div>
+            </div>
+            <div class="back-link">
+                <a href="index.html">← Back to Home</a>
+            </div>
+        </div>
+
+        <!-- Hospital Selection Section (for Update) -->
+        <div id="hospitalSelectSection" class="hospital-select-container" style="display: none;">
+            <h2 class="section-title">Select Hospital to Update</h2>
+            <div class="hospital-select-group">
+                <label for="hospitalDropdown">Hospital Name</label>
+                <select id="hospitalDropdown" onchange="loadHospitalData()">
+                    <option value="">-- Select Hospital --</option>
+                </select>
+            </div>
+            <div class="back-link">
+                <a href="#" onclick="showSection('home'); return false;">← Back to Options</a>
+            </div>
+        </div>
+
+        <!-- Register/Update Form Section -->
+        <div id="formSection" class="form-container" style="display: none;">
+            <form id="inventoryForm" onsubmit="handleSubmit(event)">
+                <div class="form-group">
+                    <label for="hospitalName">Hospital Name</label>
+                    <input type="text" id="hospitalName" name="hospitalName" required placeholder="Enter hospital name">
+                </div>
+
+                <div class="form-group">
+                    <label for="techTitansCode">Tech_Titans_Code</label>
+                    <input type="text" id="techTitansCode" name="techTitansCode" required placeholder="Enter Tech_Titans_Code">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="city">City</label>
+                        <input type="text" id="city" name="city" required placeholder="Enter city">
+                    </div>
+                    <div class="form-group">
+                        <label for="locality">Locality</label>
+                        <input type="text" id="locality" name="locality" required placeholder="Enter locality">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="contactNumber">Contact Number</label>
+                    <input type="tel" id="contactNumber" name="contactNumber" required placeholder="Enter contact number" pattern="[0-9]{10,}">
+                </div>
+
+                <div id="inventorySection">
+                    <h2 class="section-title">Blood Group Inventory</h2>
+
+                    <div class="inventory-grid">
+                        <div class="form-group">
+                            <label for="a_positive">A+ Units</label>
+                            <input type="number" id="a_positive" name="a_positive" min="0" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="a_negative">A- Units</label>
+                            <input type="number" id="a_negative" name="a_negative" min="0" value="0">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="b_positive">B+ Units</label>
+                            <input type="number" id="b_positive" name="b_positive" min="0" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="b_negative">B- Units</label>
+                            <input type="number" id="b_negative" name="b_negative" min="0" value="0">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="o_positive">O+ Units</label>
+                            <input type="number" id="o_positive" name="o_positive" min="0" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="o_negative">O- Units</label>
+                            <input type="number" id="o_negative" name="o_negative" min="0" value="0">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="ab_positive">AB+ Units</label>
+                            <input type="number" id="ab_positive" name="ab_positive" min="0" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="ab_negative">AB- Units</label>
+                            <input type="number" id="ab_negative" name="ab_negative" min="0" value="0">
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn">Update Inventory</button>
+
+                <div class="back-link">
+                    <a href="#" onclick="showSection(currentMode === 'register' ? 'home' : 'selectHospital'); return false;">← Back</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let currentMode = ''; // 'register' or 'update'
+        let allHospitals = [];
+
+        // Show different sections
+        function showSection(section) {
+            const tilesSection = document.getElementById('tilesSection');
+            const hospitalSelectSection = document.getElementById('hospitalSelectSection');
+            const formSection = document.getElementById('formSection');
+
+            // Hide all sections
+            tilesSection.style.display = 'none';
+            hospitalSelectSection.style.display = 'none';
+            formSection.style.display = 'none';
+
+            if (section === 'home') {
+                tilesSection.style.display = 'block';
+                currentMode = '';
+            } else if (section === 'register') {
+                currentMode = 'register';
+                document.getElementById('submitBtn').innerText = 'Register Hospital';
+                document.getElementById('hospitalName').readOnly = false;
+                document.getElementById('inventoryForm').reset();
+                document.getElementById('inventorySection').style.display = 'none'; // Hide inventory for register
+                formSection.style.display = 'block';
+            } else if (section === 'update') {
+                currentMode = 'update';
+                loadHospitalList();
+                hospitalSelectSection.style.display = 'block';
+            } else if (section === 'selectHospital') {
+                hospitalSelectSection.style.display = 'block';
+            }
+        }
+
+        // Load hospital list for dropdown
+        async function loadHospitalList() {
+            try {
+                const response = await fetch('/api/inventory-list');
+                const result = await response.json();
+
+                if (result.success && result.inventory.length > 0) {
+                    allHospitals = result.inventory;
+                    const dropdown = document.getElementById('hospitalDropdown');
+                    dropdown.innerHTML = '<option value="">-- Select Hospital --</option>';
+                    
+                    result.inventory.forEach((hospital, index) => {
+                        const option = document.createElement('option');
+                        option.value = index;
+                        option.textContent = hospital['Hospital Name'] || 'Unknown Hospital';
+                        dropdown.appendChild(option);
+                    });
+                } else {
+                    alert('No hospitals found in the system. Please register a hospital first.');
+                    showSection('home');
+                }
+            } catch (error) {
+                console.error('Error loading hospitals:', error);
+                alert('Error loading hospital list. Please ensure the server is running.');
+            }
+        }
+
+        // Load selected hospital data into form
+        function loadHospitalData() {
+            const dropdown = document.getElementById('hospitalDropdown');
+            const selectedIndex = dropdown.value;
+
+            if (selectedIndex === '') {
+                return;
+            }
+
+            const hospital = allHospitals[selectedIndex];
+            
+            // Populate form fields
+            document.getElementById('hospitalName').value = hospital['Hospital Name'] || '';
+            document.getElementById('techTitansCode').value = hospital['Tech_Titans_Code'] || '';
+            document.getElementById('city').value = hospital['City'] || '';
+            document.getElementById('locality').value = hospital['Locality'] || '';
+            document.getElementById('contactNumber').value = hospital['Contact'] || '';
+            
+            // Populate blood inventory
+            document.getElementById('a_positive').value = hospital['A+'] || 0;
+            document.getElementById('a_negative').value = hospital['A-'] || 0;
+            document.getElementById('b_positive').value = hospital['B+'] || 0;
+            document.getElementById('b_negative').value = hospital['B-'] || 0;
+            document.getElementById('o_positive').value = hospital['O+'] || 0;
+            document.getElementById('o_negative').value = hospital['O-'] || 0;
+            document.getElementById('ab_positive').value = hospital['AB+'] || 0;
+            document.getElementById('ab_negative').value = hospital['AB-'] || 0;
+
+            // Make hospital name readonly for updates
+            document.getElementById('hospitalName').readOnly = true;
+            document.getElementById('submitBtn').innerText = 'Update Inventory';
+            document.getElementById('inventorySection').style.display = 'block'; // Show inventory for update
+
+            // Show form
+            document.getElementById('hospitalSelectSection').style.display = 'none';
+            document.getElementById('formSection').style.display = 'block';
+        }
+
+        async function handleSubmit(event) {
+            event.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const originalBtnText = submitBtn.innerText;
+            submitBtn.innerText = currentMode === 'register' ? 'Registering...' : 'Updating...';
+            submitBtn.disabled = true;
+
+            const formData = {
+                hospitalName: document.getElementById('hospitalName').value,
+                techTitansCode: document.getElementById('techTitansCode').value,
+                city: document.getElementById('city').value,
+                locality: document.getElementById('locality').value,
+                contactNumber: document.getElementById('contactNumber').value,
+                mode: currentMode, // Add mode to distinguish between register and update
+                inventory: {
+                    a_plus: document.getElementById('a_positive').value,
+                    a_minus: document.getElementById('a_negative').value,
+                    b_plus: document.getElementById('b_positive').value,
+                    b_minus: document.getElementById('b_negative').value,
+                    o_plus: document.getElementById('o_positive').value,
+                    o_minus: document.getElementById('o_negative').value,
+                    ab_plus: document.getElementById('ab_positive').value,
+                    ab_minus: document.getElementById('ab_negative').value
+                }
+            };
+
+            try {
+                const response = await fetch('/api/inventory', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    alert(currentMode === 'register' ? 'Hospital registered successfully!' : 'Inventory updated successfully!');
+                    showSection('home');
+                } else {
+                    throw new Error(result.message);
+                }
+            } catch (error) {
+                console.error("Error updating inventory:", error);
+                alert("Error updating inventory: " + error.message + "\n\nMake sure the server is running.");
+            } finally {
+                submitBtn.innerText = originalBtnText;
+                submitBtn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
